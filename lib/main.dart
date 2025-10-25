@@ -25,173 +25,81 @@ class MyApp extends StatelessWidget {
 class MyCommunityScreen extends StatelessWidget {
   const MyCommunityScreen({super.key});
 
-  // 본문에 표시될 임시 데이터 (글 제목) - 어르신들에게 친숙한 주제로 변경
-  final List<String> postTitles = const [
-    '오늘 날씨가 참 좋구먼',
-    '무릎 아픈데 좋은 약 아시는 분?',
-    '우리 손주 사진 좀 보고 가세요',
-    '내일 복지관에서 노래자랑 한다네요',
-    '요즘 입맛이 없는데...',
-    '경로당에서 장기 둘 사람 구함',
-    '다들 건강검진은 받으셨는지?',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 1. 상단 AppBar
+      // 1. 상단 AppBar (수정됨)
       appBar: AppBar(
         title: const Text(
-          '이야기방', // '커뮤니티'를 '이야기방'으로 변경
-          // AppBar 제목 글씨 크기 키움
+          '이야기방',
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
-        // AppBar 하단에 버튼 영역을 2줄로 만듭니다.
+        // AppBar 하단 버튼 영역
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(120.0), // 높이를 120으로 늘림
+          preferredSize: const Size.fromHeight(60.0), // 주제 섹션이 없으므로 높이 60
           child: Container(
             color: Colors.white, // 배경색은 흰색
             child: Column(
               children: [
-                // 1. 첫 번째 줄 버튼 (이야기방, 모임, 기본)
+                // 1. 첫 번째 줄 버튼 (이야기방, 모임, 기본) - (수정된 부분)
                 Container(
                   height: 59.0, // 첫 번째 줄 높이
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildTopButton('이야기방',
-                          isSelected: true), // '커뮤'를 '이야기방'으로 변경하고, 선택 상태(true) 전달
+                      _buildTopButton('이야기방'), // isSelected: false (기본값)
                       _buildTopButton('모임'), // isSelected: false (기본값)
-                      _buildTopButton('기본'), // isSelected: false (기본값)
+                      _buildTopButton('기본',
+                          isSelected: true), // '기본'을 선택 상태(true)로 변경
                     ],
                   ),
                 ),
                 const Divider(
                     height: 1.0, thickness: 1.0, color: Colors.black12), // 구분선
-                // 2. 두 번째 줄 버튼 (정치, 경제, 복지)
-                Container(
-                  height: 60.0, // 두 번째 줄 높이
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0), // 가로 패딩 추가
-                  color: Colors.grey[100], // 주제 버튼 배경색을 살짝 다르게
-                  child: Row(
-                    children: [
-                      const Text(
-                        '주제:',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(width: 8.0), // '주제:'와 버튼 그룹 사이 간격
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceEvenly, // 버튼들을 균등하게 배치
-                          children: [
-                            _buildTopicButton('정치'), // 새 헬퍼 메소드 사용
-                            _buildTopicButton('경제'),
-                            _buildTopicButton('복지'),
-                          ],
-                        ),
-                      ),
-                      // '더보기' 버튼 추가
-                      _buildMoreButton(),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
         ),
       ),
 
-      // 2. 본론 (글 리스트)
-      body: ListView.builder(
-        itemCount: postTitles.length,
-        itemBuilder: (BuildContext context, int index) {
-          final title = postTitles[index];
-          return ListTile(
-            // 목록 아이템의 상하 여백을 추가해 공간 확보
-            contentPadding:
-            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            // 글 제목만 표시
-            title: Text(
-              title,
-              style: const TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w500), // 글씨 크기를 20으로 키움
-            ),
-            // 우측에 Text-to-Sound 아이콘 버튼 배치
-            trailing: IconButton(
-              icon: const Icon(
-                Icons.volume_up_outlined,
-                size: 30.0, // 아이콘 크기를 30으로 키움
-              ),
-              tooltip: '음성으로 듣기', // 아이콘에 마우스를 올리면 표시되는 툴팁
-              onPressed: () {
-                // TODO: 여기에 TTS (Text-to-Speech) 로직을 구현합니다.
-                // 예: ttsService.speak(title);
-                print('TTS 실행: $title');
-              },
-            ),
-            onTap: () {
-              // TODO: 게시글 상세 보기 로직
-              print('게시글 탭: $title');
-            },
-          );
-        },
+      // 2. 본론 (변경 없음)
+      body: Column(
+        children: [
+          // 상단 영역: 복지 정보
+          Expanded(
+            flex: 1, // 공간을 1:1 비율로 차지
+            child: _buildWelfareSection(), // 복지 정보 헬퍼 위젯 호출
+          ),
+          // 구분선
+          const Divider(height: 8.0, thickness: 8.0, color: Colors.black12),
+          // 하단 영역: 추천 글/모임
+          Expanded(
+            flex: 1, // 공간을 1:1 비율로 차지
+            child: _buildRecommendationSection(), // 추천 헬퍼 위젯 호출
+          ),
+        ],
       ),
 
-      // 3. 하단 버튼
+      // 3. 하단 버튼 (변경 없음)
       bottomNavigationBar: BottomAppBar(
         child: Container(
           height: 70.0, // 하단 바 높이를 70으로 늘림
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
           child: Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Expanded 위젯을 사용하므로 이 속성은 제거합니다.
             children: [
-              // '글쓰기' 버튼
-              Expanded(
-                flex: 2, // '문의' 버튼보다 2배의 비율로 공간을 차지
-                child: ElevatedButton.icon(
-                  icon: const Icon(
-                    Icons.edit_outlined,
-                    size: 28.0, // 아이콘 크기를 28로 키움
-                  ),
-                  label: const Text(
-                    '글쓰기',
-                    style:
-                    TextStyle(fontSize: 18.0), // 글씨 크기를 18로 키움
-                  ),
-                  // 버튼의 높이를 조절
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    minimumSize: const Size(0, 50), // 버튼의 최소 높이를 50으로 설정
-                  ),
-                  onPressed: () {
-                    // TODO: 글쓰기 화면으로 이동
-                  },
-                ),
-              ),
-              const SizedBox(width: 16.0), // 두 버튼 사이의 간격
               // '문의' 버튼
               Expanded(
                 flex: 1, // 1의 비율로 공간 차지
                 child: ElevatedButton.icon(
                   icon: const Icon(
                     Icons.help_outline,
-                    size: 28.0, // 아이콘 크기를 28로 키움
+                    size: 28.0,
                   ),
                   label: const Text(
                     '문의',
-                    style:
-                    TextStyle(fontSize: 18.0), // 글씨 크기를 18로 키움
+                    style: TextStyle(fontSize: 18.0),
                   ),
-                  // 버튼의 높이를 조절
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
                     minimumSize: const Size(0, 50), // 버튼의 최소 높이를 50으로 설정
                   ),
                   onPressed: () {
@@ -202,11 +110,11 @@ class MyCommunityScreen extends StatelessWidget {
             ],
           ),
         ),
-      ), // <--- 이 부분이 잘못된 주석 대신 괄호로 수정되었습니다.
+      ),
     );
   }
 
-  // 상단 3개 버튼을 만들기 위한 헬퍼 위젯
+  // 상단 3개 버튼을 만들기 위한 헬퍼 위젯 (변경 없음)
   Widget _buildTopButton(String text, {bool isSelected = false}) {
     // 선택되었을 때와 아닐 때의 스타일을 정의
     final selectedStyle = TextStyle(
@@ -229,7 +137,6 @@ class MyCommunityScreen extends StatelessWidget {
         // TODO: 각 버튼 탭 로직
       },
       style: TextButton.styleFrom(
-        // 선택되었을 때 버튼에 원치 않는 패딩이 생기는 것을 방지
         minimumSize: const Size(0, 0),
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
       ),
@@ -240,52 +147,164 @@ class MyCommunityScreen extends StatelessWidget {
     );
   }
 
-  // 주제 버튼 (정치, 경제, 복지)을 만들기 위한 헬퍼 위젯
-  Widget _buildTopicButton(String text) {
-    return ElevatedButton(
-      onPressed: () {
-        // TODO: 주제별 글 보기 로직 (예: 정치 버튼 클릭 시 정치 관련 글 필터링)
-        print('$text 주제 탭');
-      },
-      style: ElevatedButton.styleFrom(
-        // 어르신들이 누르기 쉽도록 둥근 모서리와 패딩 적용
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20), // 둥근 모서리
-        ),
-        // '더보기' 버튼을 위한 공간을 확보하기 위해 좌우 패딩을 살짝 줄임
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 18, // 글씨 크기
-          fontWeight: FontWeight.w600,
-        ),
+  // --- [Body를 위한 헬퍼 위젯 (변경 없음)] ---
+
+  /// 상단: 복지 정보 섹션을 빌드하는 위젯
+  Widget _buildWelfareSection() {
+    // 임시 복지 정보 데이터
+    final List<Map<String, dynamic>> welfareInfo = [
+      {'title': '기초연금 신청 안내', 'icon': Icons.savings_outlined},
+      {'title': '병원비 지원 (의료급여)', 'icon': Icons.medical_services_outlined},
+      {'title': '노인 일자리 정보', 'icon': Icons.work_outline},
+      {'title': '치매 안심센터 찾기', 'icon': Icons.psychology_outlined},
+    ];
+
+    return Container(
+      color: Colors.white, // 배경색
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬
+        children: [
+          // 섹션 제목
+          const Text(
+            '알아두면 좋은 복지 정보',
+            style: TextStyle(
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12.0),
+          // 복지 정보 리스트
+          Expanded(
+            child: ListView.builder(
+              itemCount: welfareInfo.length,
+              itemBuilder: (context, index) {
+                final item = welfareInfo[index];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 10.0),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 6.0, horizontal: 16.0),
+                    leading: Icon(item['icon'],
+                        size: 35.0, color: Colors.blue.shade700),
+                    title: Text(
+                      item['title'],
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded),
+                    onTap: () {
+                      // TODO: 해당 복지 정보 상세 페이지로 이동
+                      print('${item['title']} 탭');
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // '더보기' 버튼을 만들기 위한 헬퍼 위젯
-  Widget _buildMoreButton() {
-    return TextButton(
-      onPressed: () {
-        // TODO: 더 많은 주제 보기 (예: 다이얼로그 또는 새 화면)
-        print('더보기 탭');
-      },
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      ),
-      child: const Text(
-        '더보기 >',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: Colors.black54, // 눈에 띄지만 주제 버튼보다는 약하게
-        ),
+  /// 하단: 추천 글/모임 섹션을 빌드하는 위젯
+  Widget _buildRecommendationSection() {
+    // 임시 추천 데이터
+    final List<String> recommendedGatherings = [
+      '28일(화) 오후 2시, 공원 앞 장기 모임',
+      '매주 수요일, 다같이 동네 한바퀴 산책해요',
+    ];
+    final List<String> recommendedPosts = [
+      '요즘 유행하는 트로트 노래 모음',
+      '가을 단풍 구경가기 좋은 곳',
+      '저녁에 먹기 좋은 건강식 아시는분?',
+    ];
+
+    final List<dynamic> items = [];
+    items.add('header_gathering'); // 모임 헤더
+    items.addAll(recommendedGatherings);
+    items.add('header_posts'); // 이야기 헤더
+    items.addAll(recommendedPosts);
+
+    return Container(
+      color: Colors.grey[100], // 상단 영역과 색상 구분
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 전체 섹션 제목
+          const Text(
+            '이런 글/모임은 어떠세요?',
+            style: TextStyle(
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12.0),
+          // 추천 리스트
+          Expanded(
+            child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+
+                // '추천 모임' 헤더
+                if (item == 'header_gathering') {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                    child: Text(
+                      '▶︎ 추천 모임',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                  );
+                }
+
+                // '추천 이야기' 헤더
+                if (item == 'header_posts') {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                    child: Text(
+                      '▶︎ 추천 이야기',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.orange[800],
+                      ),
+                    ),
+                  );
+                }
+
+                // 실제 추천 아이템
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 10.0),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 4.0, horizontal: 16.0),
+                    title: Text(
+                      item as String,
+                      style: const TextStyle(
+                        fontSize: 19.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing:
+                    const Icon(Icons.arrow_forward_ios_rounded, size: 18.0),
+                    onTap: () {
+                      print('추천 아이템 탭: $item');
+                    },
+                  ),
+                );
+              },
+            ),
+          )
+        ],
       ),
     );
   }
 }
-
-
-
